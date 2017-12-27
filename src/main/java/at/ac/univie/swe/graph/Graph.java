@@ -23,6 +23,15 @@ public class Graph {
 		return edges;
 	}
 
+	public Vertex getVertex(Field f) {
+		for (Vertex v : vertices) {
+			if (v.getField().equals(f)) {
+				return v;
+			}
+		}
+		return null;
+	}
+
 	public void addVertice(Field field) {
 		Vertex vertex = new Vertex(field);
 		for (Vertex v : getVertices()) {

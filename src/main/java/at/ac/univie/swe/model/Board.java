@@ -172,6 +172,7 @@ public class Board {
 		}).findFirst();
 		if (!grassEdgeFirst.isPresent()) {
 			logger.warn("There is a single-field island: " + grassField);
+			return false;
 		} else {
 			Edge castleEdge = grassEdgeFirst.get();
 			GraphUtils.floodVisit(castleEdge.getNode1(), graph);

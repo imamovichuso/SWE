@@ -25,7 +25,7 @@ public class Player {
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Field position;
-	
+
 	@JsonIgnore
 	@OneToOne
 	private Board board;
@@ -152,6 +152,12 @@ public class Player {
 		} else {
 			placeCastle(startIndex, rowBound, r);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "Player [id=" + id + ", position=" + position + ", isPlayer1=" + isPlayer1 + ", castlePosition="
+				+ castlePosition + ", foundGold=" + foundGold + "]";
 	}
 
 }
