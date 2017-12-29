@@ -10,13 +10,14 @@ $(function() {
 	var btnNewGame = $('#btnNewGame');
 	var divCurrentGame = $('#divCurrentGame');
 
-	// first time only, draw the board
+	// draw the board, if game already started
 	getBoardData();
 
 	$(btnNewGame).click(function() {
 		btnNewGameEnabled = false;
 		$.get('/api/games/create', function(data1, status) {
 			game = data1;
+			console.log('game ' + JSON.stringify(game));
 			getBoardData();
 		});
 	});
@@ -28,7 +29,9 @@ $(function() {
 	}
 
 	function getBoardData() {
-		$.get('/api/games/current/board', function(data, status) {
+		if (!game)
+			return;
+		$.get('/api/games/' + game.id + '/board', function(data, status) {
 			if (data) {
 				board = data;
 				drawBoard();
@@ -41,7 +44,7 @@ $(function() {
 	}
 
 	function getGameData() {
-		$.get('/api/games/current', function(data, status) {
+		$.get('/api/games/' + game.id, function(data, status) {
 			game = data;
 			drawAll();
 		});
@@ -60,6 +63,7 @@ $(function() {
 		drawCastle(2);
 		drawGold(2);
 		drawPlayer(2);
+		$('#status').html(game.status);
 	}
 
 	function drawBoard() {

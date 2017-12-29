@@ -130,7 +130,7 @@ public class Game {
 	}
 
 	public static enum Status {
-		STARTED, FINISHED_WON, FINISHED_TIE
+		STARTED, FINISHED_PLAYER1_WON, FINISHED_PLAYER2_WON, FINISHED_TIE
 	}
 
 }

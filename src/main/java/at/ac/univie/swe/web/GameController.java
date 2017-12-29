@@ -34,14 +34,9 @@ public class GameController {
 		return gameService.create();
 	}
 
-	@GetMapping("/current")
-	public Game current() {
-		return gameService.current();
-	}
-
-	@GetMapping("/current/board")
-	public Board currentBoard() {
-		Game currentGame = gameService.current();
+	@GetMapping("/{id}/board")
+	public Board currentBoard(@PathVariable Long id) {
+		Game currentGame = gameService.findOne(id);
 		if (currentGame == null)
 			return null;
 		return currentGame.getBoard();

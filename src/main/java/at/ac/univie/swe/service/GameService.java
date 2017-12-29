@@ -39,7 +39,7 @@ public class GameService {
 
 	public Game create() {
 
-		Game currentGame = current();
+		Game currentGame = gameRepository.findOneByStatus(Status.STARTED);
 		if (currentGame != null) {
 			throw new IllegalStateException("There is already a game that is not finished: " + currentGame.getId());
 		}
@@ -78,10 +78,10 @@ public class GameService {
 		return game;
 	}
 
-	public Game current() {
+	/*public Game current() {
 		// There should be ONLY ONE game that has status STARTED !!!
 		return gameRepository.findOneByStatus(Status.STARTED);
-	}
+	}*/
 
 	/* HELPERS */
 	private static void printBoard(Board board) {
