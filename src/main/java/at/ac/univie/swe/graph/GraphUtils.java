@@ -131,20 +131,88 @@ public class GraphUtils {
 		return distances;
 	}
 
-	public static List<Vertex> path(Vertex from, Vertex to, Map<DistanceSelector, Distance> distances) {
-		ArrayList<Vertex> path = new ArrayList<>();
+	public static Path path(Vertex from, Vertex to, Map<DistanceSelector, Distance> distances) {
 		Distance distance = distances.get(new DistanceSelector(from, to));
 		if (distance == null || distance.getNext() == null) {
-			return path;
+			return new Path();
 		}
 		// real work
-		path.add(from);
+		ArrayList<Vertex> pathVertices = new ArrayList<>();
+		pathVertices.add(from);
+		int weight = 0;
 		while (from != null && !from.equals(to)) {
 			distance = distances.get(new DistanceSelector(from, to));
 			from = distance.getNext();
-			path.add(from);
+			pathVertices.add(from);
+			weight += distance.getWeight();
 		}
-		return path;
+		return new Path(pathVertices, weight);
+	}
+
+	/**
+	 * @param from
+	 * @param to
+	 * @param mustPass
+	 * @param distances
+	 * @return
+	 */
+	public static Path pathThroughAllGrass(Vertex from, Vertex to, Set<Vertex> mustPass,
+			Map<DistanceSelector, Distance> distances) {
+		// https://stackoverflow.com/questions/222413/find-the-shortest-path-in-a-graph-which-visits-certain-nodes
+		Path solution = null;
+		List<Vertex> mustPassList = new ArrayList<>(mustPass);
+		List<List<Vertex>> permutations = permutations(mustPassList);
+		for (int i = 0; i < permutations.size(); i++) {
+			List<Vertex> perm = permutations.get(i);
+			perm.add(0, from);
+			perm.add(to);
+			Path currPermPath = pathThrough(perm, distances);
+			if (solution == null || currPermPath.getWeight() < solution.getWeight()) {
+				solution = currPermPath;
+			}
+		}
+		return solution;
+	}
+
+	/* HELPERS */
+	public static Path pathThrough(List<Vertex> through, Map<DistanceSelector, Distance> distances) {
+		List<Vertex> totalPathVertices = new ArrayList<>();
+		int weight = 0;
+		for (int i = 0; i < through.size() - 1; i++) {
+			Path p = path(through.get(i), through.get(i + 1), distances);
+			List<Vertex> pVertices = p.getVertices();
+			if (pVertices.size() > 0) {
+				totalPathVertices.addAll(pVertices.subList(1, pVertices.size()));
+				weight += p.getWeight();
+			}
+		}
+		return new Path(totalPathVertices, weight);
+	}
+
+	private static <T> List<List<T>> permutations(List<T> items) {
+		// https://www.programcreek.com/2013/02/leetcode-permutations-java/
+		// start from an empty list
+		List<List<T>> result = new ArrayList<>();
+		result.add(new ArrayList<>());
+
+		for (int i = 0; i < items.size(); i++) {
+			// list of list in current iteration of the array num
+			List<List<T>> current = new ArrayList<>();
+			for (List<T> l : result) {
+				// # of locations to insert is largest index + 1
+				for (int j = 0; j < l.size() + 1; j++) {
+					// + add num[i] to different locations
+					l.add(j, items.get(i));
+
+					List<T> temp = new ArrayList<>(l);
+					current.add(temp);
+					// - remove num[i] add
+					l.remove(j);
+				}
+			}
+			result = new ArrayList<>(current);
+		}
+		return result;
 	}
 
 }

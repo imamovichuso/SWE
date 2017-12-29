@@ -2,12 +2,15 @@ package at.ac.univie.swe;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import at.ac.univie.swe.graph.Edge;
 import at.ac.univie.swe.graph.Graph;
 import at.ac.univie.swe.graph.GraphUtils;
+import at.ac.univie.swe.graph.Path;
 import at.ac.univie.swe.graph.Distance;
 import at.ac.univie.swe.graph.DistanceSelector;
 import at.ac.univie.swe.graph.Vertex;
@@ -23,8 +26,8 @@ public class GameTest {
 		// create game
 		Game game = new Game();
 		// create board
-		// Board board = new Board(4, 3, 1, 1);
-		Board board = new Board(8, 5, 3, 9);
+		//Board board = new Board(4, 3, 1, 1);
+		Board board = new Board(8, 3, 3, 4);
 		game.setBoard(board);
 		// create players
 		Player player1 = new Player(true, board);
@@ -47,10 +50,22 @@ public class GameTest {
 		Graph graph = GraphUtils.newGraph(board);
 		Map<DistanceSelector, Distance> distances = GraphUtils.shortestDistances(graph);
 		System.out.println(distances);
+
 		// finding path PLAYER->CASTLE
 		Vertex p1Vert = new Vertex(player1.getPosition());
 		Vertex p1CastleVert = new Vertex(player1.getCastlePosition());
-		List<Vertex> playerToCastle = GraphUtils.path(p1Vert, p1CastleVert, distances);
+
+		Set<Vertex> grassVertices = new HashSet<>();
+		for (Vertex vertex : graph.getVertices()) {
+			Field f = vertex.getField();
+			if (f.getType().isGrass() && f.getRow() < board.getSize() / 2) {
+				grassVertices.add(vertex);
+			}
+		}
+		System.out.println("grassVertices " + grassVertices.size());
+		System.out.println("grassVertices " + grassVertices);
+
+		Path playerToCastle = GraphUtils.pathThroughAllGrass(p1Vert, p1CastleVert, grassVertices, distances);
 		System.out.println("PLAYER TO CASTLE:" + playerToCastle);
 	}
 

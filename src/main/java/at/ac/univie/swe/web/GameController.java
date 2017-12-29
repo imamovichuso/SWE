@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import at.ac.univie.swe.model.Board;
 import at.ac.univie.swe.model.Game;
 import at.ac.univie.swe.service.GameService;
 
@@ -36,6 +37,14 @@ public class GameController {
 	@GetMapping("/current")
 	public Game current() {
 		return gameService.current();
+	}
+
+	@GetMapping("/current/board")
+	public Board currentBoard() {
+		Game currentGame = gameService.current();
+		if (currentGame == null)
+			return null;
+		return currentGame.getBoard();
 	}
 
 }

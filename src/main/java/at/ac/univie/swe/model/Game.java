@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Game {
 
@@ -18,6 +20,7 @@ public class Game {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
 	private Board board;
 

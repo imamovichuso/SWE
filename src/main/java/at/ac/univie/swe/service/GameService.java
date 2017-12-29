@@ -1,7 +1,6 @@
 package at.ac.univie.swe.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import at.ac.univie.swe.graph.Edge;
-import at.ac.univie.swe.graph.Graph;
-import at.ac.univie.swe.graph.GraphUtils;
-import at.ac.univie.swe.graph.Vertex;
 import at.ac.univie.swe.model.Board;
 import at.ac.univie.swe.model.Field;
 import at.ac.univie.swe.model.Game;
@@ -30,6 +25,9 @@ public class GameService {
 
 	@Autowired
 	GameRepository gameRepository;
+
+	@Autowired
+	GameExecutor gameExecutor;
 
 	public List<Game> findAll() {
 		return gameRepository.findAll();
@@ -71,6 +69,12 @@ public class GameService {
 		// place players and their respective gold
 		game.placePlayersAndGold();
 
+		try {
+			gameExecutor.startGame(game);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 		return game;
 	}
 
@@ -78,7 +82,6 @@ public class GameService {
 		// There should be ONLY ONE game that has status STARTED !!!
 		return gameRepository.findOneByStatus(Status.STARTED);
 	}
-	
 
 	/* HELPERS */
 	private static void printBoard(Board board) {

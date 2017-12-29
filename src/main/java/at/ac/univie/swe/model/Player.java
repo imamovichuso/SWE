@@ -108,14 +108,16 @@ public class Player {
 		int grassFieldsMin = board.getMinGrass();
 		int mountainFieldsMin = board.getMinMountain();
 		int waterFieldsMin = board.getMinWater();
+
 		// generating random (total) numbers of grass/mountain/water fields
 		Random r = new Random();
 		int grassFieldsMax = fieldsTotal - grassFieldsMin - mountainFieldsMin - waterFieldsMin;
-		int grassFieldsTotal = grassFieldsMin + r.nextInt(grassFieldsMax - 1);
-
+		int grassFieldsTotal = (grassFieldsMin + r.nextInt(grassFieldsMax - 1));
+		if (grassFieldsTotal > 7) {
+			grassFieldsTotal = 7;
+		}
 		int mountainFieldsMax = fieldsTotal - grassFieldsTotal - mountainFieldsMin - waterFieldsMin;
 		int mountainFieldsTotal = grassFieldsMin + r.nextInt(mountainFieldsMax);
-
 		int waterFieldsTotal = fieldsTotal - grassFieldsTotal - mountainFieldsTotal;
 
 		// populate random grass

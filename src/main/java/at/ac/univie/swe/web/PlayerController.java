@@ -18,7 +18,7 @@ public class PlayerController {
 	@Autowired
 	PlayerRepository playerRepository;
 
-	@GetMapping("/")
+	@GetMapping("")
 	public List<Player> findAll() {
 		return playerRepository.findAll();
 	}
