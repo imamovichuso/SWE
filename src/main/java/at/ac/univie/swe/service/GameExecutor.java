@@ -65,8 +65,6 @@ public class GameExecutor {
 				}
 			}
 		}
-		System.out.println("grass1 " + player1GrassVertices);
-		System.out.println("grass2 " + player2GrassVertices);
 
 		int numMoves = 0;
 		int maxMoves = 200;
@@ -77,9 +75,6 @@ public class GameExecutor {
 				.pathThroughAllGrass(p1StartVert, p1CastleVert, player1GrassVertices, distances).getVertices();
 		List<Vertex> player2Path = GraphUtils
 				.pathThroughAllGrass(p2StartVert, p2CastleVert, player2GrassVertices, distances).getVertices();
-
-		System.out.println("player1Path " + player1Path);
-		System.out.println("player2Path " + player2Path);
 
 		while (numMoves < maxMoves && !player1Won && !player2Won) {
 
@@ -104,7 +99,6 @@ public class GameExecutor {
 					player2Path.remove(0);
 				}
 			}
-			System.out.println("MOVE " + numMoves);
 
 			numMoves++;
 			player1Move = !player1Move;

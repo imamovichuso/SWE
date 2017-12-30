@@ -90,7 +90,7 @@ public class GraphUtils {
 				// if same vertice -> distance is ZERO
 				// if different vertices -> initialize to INFINITE,
 				// here 10 000 because of overflow handling...
-				int w = (v1.equals(v2)) ? 0 : 10_000;
+				int w = (v1.equals(v2)) ? 0 : Graph.MAX_WEIGHT;
 				Distance d = new Distance(w);
 				DistanceSelector ds = new DistanceSelector(v1, v2);
 				distances.put(ds, d);
@@ -138,13 +138,15 @@ public class GraphUtils {
 		}
 		// real work
 		ArrayList<Vertex> pathVertices = new ArrayList<>();
-		pathVertices.add(from);
+		// pathVertices.add(from);
 		int weight = 0;
 		while (from != null && !from.equals(to)) {
 			distance = distances.get(new DistanceSelector(from, to));
+			weight += Graph.getWeight(from.getField(), distance.getNext().getField());
 			from = distance.getNext();
 			pathVertices.add(from);
-			weight += distance.getWeight();
+			// weight += distance.getWeight();
+
 		}
 		return new Path(pathVertices, weight);
 	}

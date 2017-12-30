@@ -94,6 +94,7 @@ public class Player {
 
 	/* METHODS */
 	public void populateBoardHalf() {
+		logger.info("Populating player" + (isPlayer1 ? 1 : 2) + " board half...");
 		int boardSizeHalf = board.getSize() / 2;
 		// if player1 start from 0 else from size/2
 		int startIndex = isPlayer1 ? 0 : boardSizeHalf;

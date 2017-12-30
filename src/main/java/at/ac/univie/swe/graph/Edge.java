@@ -42,7 +42,6 @@ public class Edge {
 		int result = 1;
 		result = prime * result + ((node1 == null) ? 0 : node1.hashCode());
 		result = prime * result + ((node2 == null) ? 0 : node2.hashCode());
-		result = prime * result + weight;
 		return result;
 	}
 
@@ -64,8 +63,6 @@ public class Edge {
 			if (other.node2 != null)
 				return false;
 		} else if (!node2.equals(other.node2))
-			return false;
-		if (weight != other.weight)
 			return false;
 		return true;
 	}

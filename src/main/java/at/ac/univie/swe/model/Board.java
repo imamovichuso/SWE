@@ -167,11 +167,11 @@ public class Board {
 		// it starts from player1 castle, since it it 100% grass field :)
 		Graph graph = GraphUtils.newGraph(this);
 
-		Optional<Edge> grassEdgeFirst = graph.getEdges().stream().filter(e -> {
-			return e.getNode1().getField().equals(grassField) || e.getNode2().getField().equals(grassField);
-		}).findFirst();
+		Optional<Edge> grassEdgeFirst = graph.getEdges().stream()
+				.filter(e -> e.getNode1().getField().equals(grassField) || e.getNode2().getField().equals(grassField))
+				.findFirst();
 		if (!grassEdgeFirst.isPresent()) {
-			logger.warn("There is a single-field island: " + grassField);
+			logger.debug("There is a single-field island: " + grassField);
 			return false;
 		} else {
 			Edge castleEdge = grassEdgeFirst.get();
@@ -179,7 +179,7 @@ public class Board {
 		}
 		for (Vertex v : graph.getVertices()) {
 			if (!v.isVisited()) {
-				logger.warn("There is an island, field: " + grassField);
+				logger.debug("There is an island, field: " + grassField);
 				return false;
 			}
 		}

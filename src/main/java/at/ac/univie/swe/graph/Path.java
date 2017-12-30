@@ -10,7 +10,7 @@ public class Path {
 
 	public Path() {
 		vertices = new ArrayList<>();
-		weight = 10_000;
+		weight = Graph.MAX_WEIGHT;
 	}
 
 	public Path(List<Vertex> vertices, int weight) {

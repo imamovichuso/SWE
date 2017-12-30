@@ -64,10 +64,11 @@ public class GameService {
 			player2.populateBoardHalf();
 			logger.info("Trying board: ");
 			printBoard(board);
-		} while (!game.getBoard().isOk(player1.getCastlePosition()));
+		} while (!board.isOk(player1.getCastlePosition()));
 
 		// place players and their respective gold
 		game.placePlayersAndGold();
+		game = gameRepository.save(game);
 
 		try {
 			gameExecutor.startGame(game);
@@ -77,11 +78,6 @@ public class GameService {
 
 		return game;
 	}
-
-	/*public Game current() {
-		// There should be ONLY ONE game that has status STARTED !!!
-		return gameRepository.findOneByStatus(Status.STARTED);
-	}*/
 
 	/* HELPERS */
 	private static void printBoard(Board board) {
@@ -95,7 +91,7 @@ public class GameService {
 				else if (field.getType().isWater())
 					rowString += " ";
 			}
-			logger.info(rowString);
+			logger.debug(rowString);
 		}
 	}
 }

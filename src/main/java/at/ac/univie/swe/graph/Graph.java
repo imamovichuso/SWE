@@ -7,6 +7,8 @@ import at.ac.univie.swe.model.Field;
 
 public class Graph {
 
+	public static final int MAX_WEIGHT = 10_000;
+
 	private Set<Vertex> vertices;
 	private Set<Edge> edges;
 
@@ -56,24 +58,26 @@ public class Graph {
 		}
 		// edges are ADDED if there is a CONNECTION, e.g grass->mountain etc.
 		int weight = getWeight(field1, field2);
-		if (weight > 0) {
+		if (weight < MAX_WEIGHT) {
 			Edge edge = new Edge(node1, node2, weight);
-			getEdges().add(edge);
+			edges.add(edge);
 		}
 	}
 
-	private static int getWeight(Field field, Field fieldUp) {
-		int weight = -1;
-		if (field.getType().isGrass()) {
-			if (fieldUp.getType().isGrass()) {
+	public static int getWeight(Field field1, Field field2) {
+		if (field1.equals(field2))
+			return 0;
+		int weight = MAX_WEIGHT;
+		if (field1.getType().isGrass()) {
+			if (field2.getType().isGrass()) {
 				weight = 1;
-			} else if (fieldUp.getType().isMountain()) {
+			} else if (field2.getType().isMountain()) {
 				weight = 2;
 			}
-		} else if (field.getType().isMountain()) {
-			if (fieldUp.getType().isGrass()) {
+		} else if (field1.getType().isMountain()) {
+			if (field2.getType().isGrass()) {
 				weight = 2;
-			} else if (fieldUp.getType().isMountain()) {
+			} else if (field2.getType().isMountain()) {
 				weight = 4;
 			}
 		}

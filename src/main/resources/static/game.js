@@ -63,7 +63,11 @@ $(function() {
 		drawCastle(2);
 		drawGold(2);
 		drawPlayer(2);
+		// game status
 		$('#status').html(game.status);
+		if (game.status.indexOf('FINISHED') !== -1) {
+			btnNewGameEnabled = true;
+		}
 	}
 
 	function drawBoard() {
