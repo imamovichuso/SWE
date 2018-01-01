@@ -138,15 +138,13 @@ public class GraphUtils {
 		}
 		// real work
 		ArrayList<Vertex> pathVertices = new ArrayList<>();
-		// pathVertices.add(from);
+		pathVertices.add(from);
 		int weight = 0;
 		while (from != null && !from.equals(to)) {
 			distance = distances.get(new DistanceSelector(from, to));
 			weight += Graph.getWeight(from.getField(), distance.getNext().getField());
 			from = distance.getNext();
 			pathVertices.add(from);
-			// weight += distance.getWeight();
-
 		}
 		return new Path(pathVertices, weight);
 	}
@@ -177,7 +175,7 @@ public class GraphUtils {
 	}
 
 	/* HELPERS */
-	public static Path pathThrough(List<Vertex> through, Map<DistanceSelector, Distance> distances) {
+	private static Path pathThrough(List<Vertex> through, Map<DistanceSelector, Distance> distances) {
 		List<Vertex> totalPathVertices = new ArrayList<>();
 		int weight = 0;
 		for (int i = 0; i < through.size() - 1; i++) {

@@ -22,6 +22,12 @@ public class Field {
 	}
 
 	public Field(int row, int column) {
+		if (row < 0) {
+			throw new IllegalArgumentException("Row can't be negative: " + row);
+		}
+		if (column < 0) {
+			throw new IllegalArgumentException("Column can't be negative: " + column);
+		}
 		this.row = row;
 		this.column = column;
 	}

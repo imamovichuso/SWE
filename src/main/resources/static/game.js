@@ -25,7 +25,7 @@ $(function() {
 	function initGameRefresh() {
 		gameRefresh = window.setInterval(function() {
 			getGameData();
-		}, 500);
+		}, 300);
 	}
 
 	function getBoardData() {
@@ -68,6 +68,8 @@ $(function() {
 		if (game.status.indexOf('FINISHED') !== -1) {
 			btnNewGameEnabled = true;
 		}
+		$('#numMoves').html(game.numMoves);
+		$('#moves').html(game.moves);
 	}
 
 	function drawBoard() {

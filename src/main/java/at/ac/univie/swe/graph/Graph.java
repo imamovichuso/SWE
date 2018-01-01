@@ -34,6 +34,20 @@ public class Graph {
 		return null;
 	}
 
+	public Edge getEdge(Field f1, Field f2) {
+		for (Edge e : edges) {
+			Field n1Field = e.getNode1().getField();
+			Field n2Field = e.getNode2().getField();
+			if (n1Field.equals(f1) && n2Field.equals(f2)) {
+				return e;
+			}
+			if (n1Field.equals(f2) && n2Field.equals(f1)) {
+				return e;
+			}
+		}
+		return null;
+	}
+
 	public void addVertice(Field field) {
 		Vertex vertex = new Vertex(field);
 		for (Vertex v : getVertices()) {

@@ -16,6 +16,9 @@ import at.ac.univie.swe.model.Game;
 import at.ac.univie.swe.model.Player;
 import at.ac.univie.swe.model.Row;
 
+/*
+ * Playground for testing game behaviour
+ */
 public class GameTest {
 
 	public static void main(String[] args) {
@@ -39,7 +42,7 @@ public class GameTest {
 			player2.populateBoardHalf();
 			printBoard(board);
 		} while (!board.isOk(player1.getCastlePosition()));
-		
+
 		game.placePlayersAndGold();
 
 		// finding ALL shortest paths

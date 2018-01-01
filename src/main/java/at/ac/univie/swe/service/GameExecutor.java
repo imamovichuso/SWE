@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import at.ac.univie.swe.graph.Distance;
 import at.ac.univie.swe.graph.DistanceSelector;
+import at.ac.univie.swe.graph.Edge;
 import at.ac.univie.swe.graph.Graph;
 import at.ac.univie.swe.graph.GraphUtils;
-import at.ac.univie.swe.graph.Path;
 import at.ac.univie.swe.graph.Vertex;
 import at.ac.univie.swe.model.Board;
 import at.ac.univie.swe.model.Field;
@@ -39,7 +39,7 @@ public class GameExecutor {
 	// https://spring.io/guides/gs/async-method/
 	@Async
 	public void startGame(Game game) throws InterruptedException {
-		logger.info("Starting game...");
+		logger.info("Starting game " + game.getId() + " ...");
 		// finding ALL shortest paths
 		Board board = game.getBoard();
 		Graph graph = GraphUtils.newGraph(board);
@@ -66,42 +66,56 @@ public class GameExecutor {
 			}
 		}
 
-		int numMoves = 0;
 		int maxMoves = 200;
+
+		int numMoves = 0;
+		int player1Moves = 0;
+		int player2Moves = 0;
+
 		boolean player1Won = false;
 		boolean player2Won = false;
-		boolean player1Move = true; // whos turn is it
+		boolean isPlayer1Move = true; // whos turn is it
 		List<Vertex> player1Path = GraphUtils
 				.pathThroughAllGrass(p1StartVert, p1CastleVert, player1GrassVertices, distances).getVertices();
 		List<Vertex> player2Path = GraphUtils
 				.pathThroughAllGrass(p2StartVert, p2CastleVert, player2GrassVertices, distances).getVertices();
 
 		while (numMoves < maxMoves && !player1Won && !player2Won) {
-
-			if (player1Move) {
-				player1.setPosition(player1Path.get(0).getField());
-				if (!player1.isFoundGold() && player1.getPosition().equals(board.getPlayer1GoldPosition())) {
-					player1.setFoundGold(true);
-					player1Path = GraphUtils
-							.path(new Vertex(player1.getPosition()), new Vertex(player2.getCastlePosition()), distances)
-							.getVertices();
-				} else {
-					player1Path.remove(0);
+			// move player
+			if (isPlayer1Move) {
+				player1Moves++;
+				Field nextPosition = player1Path.get(0).getField();
+				Edge edge = graph.getEdge(player1.getPosition(), nextPosition);
+				logger.debug("player1 " + player1);
+				logger.debug("player1 path " + player1Path);
+				logger.debug("next position " + nextPosition);
+				logger.debug("edge " + edge);
+				if (player1Moves == edge.getWeight()) {
+					game.setMoves(game.getMoves() + moveString(player1.getPosition(), nextPosition, 1));
+					player1.setPosition(nextPosition);
+					updatePlayerPath(board, distances, player1, player2, board.getPlayer1GoldPosition(), player1Path);
+					player1Moves = 0;
 				}
 			} else {
-				player2.setPosition(player2Path.get(0).getField());
-				if (!player2.isFoundGold() && player2.getPosition().equals(board.getPlayer2GoldPosition())) {
-					player2.setFoundGold(true);
-					player2Path = GraphUtils
-							.path(new Vertex(player2.getPosition()), new Vertex(player1.getCastlePosition()), distances)
-							.getVertices();
-				} else {
-					player2Path.remove(0);
+				player2Moves++;
+				Field nextPosition = player2Path.get(0).getField();
+				Edge edge = graph.getEdge(player2.getPosition(), nextPosition);
+				logger.debug("player2 " + player2);
+				logger.debug("player2 path " + player2Path);
+				logger.debug("next position " + nextPosition);
+				logger.debug("edge " + edge);
+				int edgeWeight = edge.getWeight();
+				if (player2Moves == edgeWeight) {
+					game.setMoves(game.getMoves() + moveString(player2.getPosition(), nextPosition, 2));
+					player2.setPosition(nextPosition);
+					updatePlayerPath(board, distances, player2, player1, board.getPlayer2GoldPosition(), player2Path);
+					player2Moves = 0;
 				}
 			}
 
 			numMoves++;
-			player1Move = !player1Move;
+			game.setNumMoves(numMoves);
+			isPlayer1Move = !isPlayer1Move;
 
 			// check if someone won
 			if (player1.isFoundGold() && player1.getPosition().equals(player2.getCastlePosition()))
@@ -116,20 +130,45 @@ public class GameExecutor {
 
 			playerRepository.save(player1);
 			playerRepository.save(player2);
-			Thread.sleep(1000); // wait one second
+			gameRepository.save(game);
+			Thread.sleep(500); // wait half-second
 		}
 
 		if (player1Won) {
 			game.setStatus(Status.FINISHED_PLAYER1_WON);
-		} else if (player1Won) {
+		} else if (player2Won) {
 			game.setStatus(Status.FINISHED_PLAYER2_WON);
 		} else {
 			game.setStatus(Status.FINISHED_TIE);
 		}
-
-		System.out.println("Status " + game.getStatus());
 		gameRepository.save(game);
+	}
 
+	private void updatePlayerPath(Board board, Map<DistanceSelector, Distance> distances, Player player,
+			Player playerOther, Field goldPosition, List<Vertex> playerPath) {
+		if (!player.isFoundGold() && player.getPosition().equals(goldPosition)) {
+			player.setFoundGold(true);
+			playerPath.clear();
+			List<Vertex> pathToOponentCastle = GraphUtils
+					.path(new Vertex(player.getPosition()), new Vertex(playerOther.getCastlePosition()), distances)
+					.getVertices();
+			// without player's position!!!
+			pathToOponentCastle = pathToOponentCastle.subList(1, pathToOponentCastle.size());
+			playerPath.addAll(pathToOponentCastle);
+		} else {
+			playerPath.remove(0);
+		}
+	}
+
+	private String moveString(Field from, Field to, int player) {
+		String cls = (player == 1) ? "text-success" : "text-info";
+		String res = "";
+		res += "<span class='" + cls + "'" + player + "Move'>Player" + player + "[";
+		res += from.getRow() + ":" + from.getColumn();
+		res += "->";
+		res += to.getRow() + ":" + to.getColumn();
+		res += "] </span>";
+		return res;
 	}
 
 }

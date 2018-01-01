@@ -3,12 +3,14 @@ package at.ac.univie.swe.model;
 import java.util.Random;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +33,11 @@ public class Game {
 
 	@Enumerated(EnumType.STRING)
 	private Status status;
+
+	private int numMoves;
+	@Lob
+	@Column(length = 100000)
+	private String moves = "";
 
 	public Game() {
 		this.status = Status.STARTED;
@@ -81,6 +88,22 @@ public class Game {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public int getNumMoves() {
+		return numMoves;
+	}
+
+	public void setNumMoves(int numMoves) {
+		this.numMoves = numMoves;
+	}
+
+	public String getMoves() {
+		return moves;
+	}
+
+	public void setMoves(String moves) {
+		this.moves = moves;
 	}
 
 	/* METHODS */
