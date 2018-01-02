@@ -15,7 +15,7 @@ $(function() {
 
 	$(btnNewGame).click(function() {
 		btnNewGameEnabled = false;
-		$.get('/api/games/create', function(data1, status) {
+		$.post('/api/games', function(data1, status) {
 			game = data1;
 			console.log('game ' + JSON.stringify(game));
 			getBoardData();
