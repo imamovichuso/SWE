@@ -47,6 +47,9 @@ $(function() {
 		$.get('/api/games/' + game.id, function(data, status) {
 			game = data;
 			drawAll();
+		}).fail(function() {
+			alert("Error while fetching current game data.");
+			clearInterval(gameRefresh);
 		});
 	}
 
